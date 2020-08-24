@@ -41,21 +41,21 @@ spec:
             name: renderer-go-app-env-vars
         resources:
           requests:
-            cpu: 10m
-            memory: 5Mi
-          limits:
-            cpu: 20m
+            cpu: 100m
             memory: 10Mi
+          limits:
+            cpu: 200m
+            memory: 20Mi
         ports:
         - containerPort: 50051
           name: renderer-go
         readinessProbe:
           exec:
-            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+            command: ["/bin/grpc_health_probe", "-addr=:50051", "-connect-timeout=5s", "-rpc-timeout=5s"]
           initialDelaySeconds: 5
         livenessProbe:
           exec:
-            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+            command: ["/bin/grpc_health_probe", "-addr=:50051", "-connect-timeout=5s", "-rpc-timeout=5s"]
           initialDelaySeconds: 10
         securityContext:
           runAsNonRoot: true
