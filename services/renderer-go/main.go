@@ -76,7 +76,6 @@ func run(args []string) error {
 	return nil
 }
 
-
 func stop(s *grpc.Server, timeout time.Duration, logger *zap.Logger) {
 	sigChan := make(chan os.Signal)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
