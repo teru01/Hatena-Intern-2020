@@ -71,6 +71,21 @@ func TestRender(t *testing.T) {
 			out: `<h1>タイトル<a href="http://google.com">hoge</a></h1>
 `,
 		},
+		TC{
+			in: `- [hoge](http://google.com)
+`,
+			out: `<ul><li><a href="http://google.com">hoge</a></li></ul>
+`,
+		},
+		TC{
+			in: `- [hoge](http://google.com)
+	- [bar](http://google.com)
+# title
+`,
+			out: `<ul><li><a href="http://google.com">hoge</a></li><ul><li><a href="http://google.com">bar</a></li></ul></ul>
+<h1>title</h1>
+`,
+		},
 	}
 
 	lc, wc := converter.NewConverters()
