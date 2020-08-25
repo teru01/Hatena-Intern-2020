@@ -48,9 +48,11 @@ func TestList(t *testing.T) {
 			in: `- hoge
 	- qwe
 hoge
+bar
 `,
 			out: `<ul><li>hoge</li><ul><li>qwe</li></ul></ul>
 hoge
+bar
 `,
 		},
 	}
