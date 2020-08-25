@@ -15,6 +15,7 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/hatena/Hatena-Intern-2020/services/renderer-go/config"
+	"github.com/hatena/Hatena-Intern-2020/services/renderer-go/converter"
 	server "github.com/hatena/Hatena-Intern-2020/services/renderer-go/grpc"
 	"github.com/hatena/Hatena-Intern-2020/services/renderer-go/log"
 	pb "github.com/hatena/Hatena-Intern-2020/services/renderer-go/pb/renderer"
@@ -63,7 +64,8 @@ func run(args []string) error {
 			grpc_recovery.UnaryServerInterceptor(),
 		)),
 	)
-	svr := server.NewServer()
+	lcs, wcs := converter.NewConverters()
+	svr := server.NewServer(lcs, wcs)
 	pb.RegisterRendererServer(s, svr)
 	healthpb.RegisterHealthServer(s, svr)
 	go stop(s, conf.GracefulStopTimeout, logger)

@@ -8,10 +8,12 @@ import (
 )
 
 type LineConverter interface {
-	convert(src string) (string, error)
+	convertLine(src string) (string, error)
 }
 
-type WholeConverter LineConverter
+type WholeConverter interface {
+	convertText(src string) (string, error)
+}
 
 func Execute(text string, lineConverters []LineConverter, wholeConverters []WholeConverter) (string, error) {
 	reader := bufio.NewReader(strings.NewReader(text))
@@ -24,21 +26,32 @@ func Execute(text string, lineConverters []LineConverter, wholeConverters []Whol
 			return "", err
 		}
 		for _, lc := range lineConverters {
-			convertedLine, err := lc.convert(line)
+			line, err = lc.convertLine(strings.TrimRight(line, "\n"))
 			if err != nil {
 				return "", err
 			}
-			fmt.Fprintf(&builder, convertedLine+"\n")
 		}
+		fmt.Fprintf(&builder, line+"\n")
 	}
 	convertedText := builder.String()
 
 	for _, wc := range wholeConverters {
 		var err error
-		convertedText, err = wc.convert(convertedText)
+		convertedText, err = wc.convertText(convertedText)
 		if err != nil {
 			return "", err
 		}
 	}
 	return convertedText, nil
+}
+
+// ここに書くのはあまり良く無いかも
+func NewConverters() ([]LineConverter, []WholeConverter) {
+	return []LineConverter{
+			NewHeadingConverter(5),
+			NewLinkConverter(),
+		},
+		[]WholeConverter{
+			NewListConverter(),
+		}
 }

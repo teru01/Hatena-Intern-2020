@@ -26,11 +26,9 @@ func TestConvert(t *testing.T) {
 		"<h2>hoge##</h2>",
 	}
 
-	h := &HeadingConverter{
-		AllowedLevel: 5,
-	}
+	h := NewHeadingConverter(5)
 	for i, _ := range testCases {
-		result, err := h.convert(testCases[i])
+		result, err := h.convertLine(testCases[i])
 		assert.NoError(t, err)
 		assert.Equal(t, expected[i], result)
 	}
