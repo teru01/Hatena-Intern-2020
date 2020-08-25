@@ -7,6 +7,12 @@ import (
 	"strings"
 )
 
+type LineConverter interface {
+	convert(src string) (string, error)
+}
+
+type WholeConverter LineConverter
+
 func Execute(text string, lineConverters []LineConverter, wholeConverters []WholeConverter) (string, error) {
 	reader := bufio.NewReader(strings.NewReader(text))
 	var builder strings.Builder
