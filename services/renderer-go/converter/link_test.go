@@ -30,10 +30,18 @@ func TestLink(t *testing.T) {
 			in:  "1つ目は[hoge](http://google.com)で，2つ目は[hoge](http://google.com)です．",
 			out: "1つ目は<a href=http://google.com>hoge</a>で，2つ目は<a href=http://google.com>hoge</a>です．",
 		},
+		TC{
+			in:  "1つ目はhttp://google.com",
+			out: "1つ目は<a href=http://google.com></a>",
+		},
+		TC{
+			in:  "1つ目はhttp://google.com で，2つ目は[hoge](http://google.com)です．",
+			out: "1つ目は<a href=http://google.com></a> で，2つ目は<a href=http://google.com>hoge</a>です．",
+		},
 	}
 
 	lc := &LinkConverter{
-		Pattern: regexp.MustCompile(`\[(.[^\]]*)\]\((https?://.[^\)]*)\)`),
+		Pattern: regexp.MustCompile(`\[(.[^\]]*)\]\((https?://.[^\)]*)\)|(https?://.[^\s]*)`),
 	}
 	for _, testCase := range testCases {
 		result, err := lc.convert(testCase.in)
