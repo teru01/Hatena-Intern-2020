@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"regexp"
 	"strconv"
 	"strings"
 	"syscall"
@@ -15,6 +16,7 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/hatena/Hatena-Intern-2020/services/renderer-go/config"
+	"github.com/hatena/Hatena-Intern-2020/services/renderer-go/converter"
 	server "github.com/hatena/Hatena-Intern-2020/services/renderer-go/grpc"
 	"github.com/hatena/Hatena-Intern-2020/services/renderer-go/log"
 	pb "github.com/hatena/Hatena-Intern-2020/services/renderer-go/pb/renderer"
@@ -63,7 +65,8 @@ func run(args []string) error {
 			grpc_recovery.UnaryServerInterceptor(),
 		)),
 	)
-	svr := server.NewServer()
+	lcs, wcs := NewConverters()
+	svr := server.NewServer(lcs, wcs)
 	pb.RegisterRendererServer(s, svr)
 	healthpb.RegisterHealthServer(s, svr)
 	go stop(s, conf.GracefulStopTimeout, logger)
@@ -72,6 +75,19 @@ func run(args []string) error {
 	}
 
 	return nil
+}
+
+func NewConverters() ([]converter.LineConverter, []converter.WholeConverter) {
+	return []converter.LineConverter{
+			&converter.HeadingConverter{
+				AllowedLevel: 5,
+				Pattern:      regexp.MustCompile(`^(#+) .*`),
+			},
+			&converter.LinkConverter{
+				Pattern: regexp.MustCompile(`\[(.[^\]]*)\]\((https?://.[^\)]*)\)`),
+			},
+		},
+		[]converter.WholeConverter{}
 }
 
 func stop(s *grpc.Server, timeout time.Duration, logger *zap.Logger) {
