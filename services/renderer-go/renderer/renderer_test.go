@@ -2,7 +2,6 @@ package renderer
 
 import (
 	"context"
-	"regexp"
 	"testing"
 
 	"github.com/hatena/Hatena-Intern-2020/services/renderer-go/converter"
@@ -14,7 +13,7 @@ type TC struct {
 	out string
 }
 
-func Test_Render(t *testing.T) {
+func TestRender(t *testing.T) {
 	testCases := []TC{
 		TC{
 			in: `こんにちは，hello, world!
@@ -54,8 +53,8 @@ func Test_Render(t *testing.T) {
 			in: `こんにちは，[hoge](http://お名前.com).
 クァwsedrftgyふじこ[ここをクリック](http://yahoo.com)
 `,
-			out: `こんにちは，<a href=http://お名前.com>hoge</a>.
-クァwsedrftgyふじこ<a href=http://yahoo.com>ここをクリック</a>
+			out: `こんにちは，<a href="http://お名前.com">hoge</a>.
+クァwsedrftgyふじこ<a href="http://yahoo.com">ここをクリック</a>
 `,
 		},
 		TC{
@@ -63,34 +62,21 @@ func Test_Render(t *testing.T) {
 1つ目は[hoge](http://google.com)で，2つ目は[hoge](http://google.com)です．
 `,
 			out: `<h1>タイトル</h1>
-1つ目は<a href=http://google.com>hoge</a>で，2つ目は<a href=http://google.com>hoge</a>です．
+1つ目は<a href="http://google.com">hoge</a>で，2つ目は<a href="http://google.com">hoge</a>です．
 `,
 		},
 		TC{
 			in: `# タイトル[hoge](http://google.com)
 `,
-			out: `<h1>タイトル<a href=http://google.com>hoge</a></h1>
+			out: `<h1>タイトル<a href="http://google.com">hoge</a></h1>
 `,
 		},
 	}
 
+	lc, wc := converter.NewConverters()
 	for _, testCase := range testCases {
-		lc, wc := NewConverters()
 		html, err := Render(context.Background(), testCase.in, lc, wc)
 		assert.NoError(t, err)
 		assert.Equal(t, testCase.out, html)
 	}
-}
-
-func NewConverters() ([]converter.LineConverter, []converter.WholeConverter) {
-	return []converter.LineConverter{
-			&converter.HeadingConverter{
-				AllowedLevel: 5,
-				Pattern:      regexp.MustCompile(`^(#+) .*`),
-			},
-			&converter.LinkConverter{
-				Pattern: regexp.MustCompile(`\[(.[^\]]*)\]\((https?://.[^\)]*)\)`),
-			},
-		},
-		[]converter.WholeConverter{}
 }
