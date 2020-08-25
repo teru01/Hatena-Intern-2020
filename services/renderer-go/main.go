@@ -5,7 +5,6 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"regexp"
 	"strconv"
 	"strings"
 	"syscall"
@@ -65,7 +64,7 @@ func run(args []string) error {
 			grpc_recovery.UnaryServerInterceptor(),
 		)),
 	)
-	lcs, wcs := NewConverters()
+	lcs, wcs := converter.NewConverters()
 	svr := server.NewServer(lcs, wcs)
 	pb.RegisterRendererServer(s, svr)
 	healthpb.RegisterHealthServer(s, svr)
@@ -77,18 +76,6 @@ func run(args []string) error {
 	return nil
 }
 
-func NewConverters() ([]converter.LineConverter, []converter.WholeConverter) {
-	return []converter.LineConverter{
-			&converter.HeadingConverter{
-				AllowedLevel: 5,
-				Pattern:      regexp.MustCompile(`^(#+) .*`),
-			},
-			&converter.LinkConverter{
-				Pattern: regexp.MustCompile(`\[(.[^\]]*)\]\((https?://.[^\)]*)\)`),
-			},
-		},
-		[]converter.WholeConverter{}
-}
 
 func stop(s *grpc.Server, timeout time.Duration, logger *zap.Logger) {
 	sigChan := make(chan os.Signal)

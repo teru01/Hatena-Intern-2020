@@ -1,7 +1,6 @@
 package converter
 
 import (
-	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -27,10 +26,7 @@ func TestConvert(t *testing.T) {
 		"<h2>hoge##</h2>",
 	}
 
-	h := &HeadingConverter{
-		AllowedLevel: 5,
-		Pattern:      regexp.MustCompile(`^(#+) .*`),
-	}
+	h := NewHeadingConverter(5)
 	for i, _ := range testCases {
 		result, err := h.convert(testCases[i])
 		assert.NoError(t, err)

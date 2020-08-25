@@ -11,6 +11,13 @@ type HeadingConverter struct {
 	Pattern      *regexp.Regexp
 }
 
+func NewHeadingConverter(allowedLevel int) *HeadingConverter {
+	return &HeadingConverter{
+		AllowedLevel: allowedLevel,
+		Pattern:      regexp.MustCompile(`^(#+) .*`),
+	}
+}
+
 func (hc *HeadingConverter) convert(line string) (string, error) {
 	matches := hc.Pattern.FindStringSubmatchIndex(line)
 	if len(matches) == 0 {
