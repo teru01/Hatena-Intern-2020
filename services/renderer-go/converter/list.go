@@ -22,14 +22,20 @@ func (lc *ListConverter) convertText(text string) (string, error) {
 	prevNumIndent := -1
 	currentNumIndent := 0
 	isListZone := false
-	for _, line := range lines {
+	nLines := len(lines)
+	for i, line := range lines {
 		r := lc.Pattern.FindStringSubmatchIndex(line)
 		if len(r) == 0 {
 			if isListZone {
 				builder.WriteString(strings.Repeat("</ul>", currentNumIndent+1))
+				builder.WriteString("\n")
 				isListZone = false
 			}
-			builder.WriteString("\n" + line)
+			if i == nLines-1 {
+				builder.WriteString(line)
+			} else {
+				builder.WriteString(line + "\n")
+			}
 			continue
 		}
 		isListZone = true
