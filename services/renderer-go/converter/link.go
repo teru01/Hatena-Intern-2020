@@ -7,11 +7,11 @@ import (
 )
 
 type LinkConverter struct {
-	pattern *regexp.Regexp
+	Pattern *regexp.Regexp
 }
 
 func (lc *LinkConverter) convert(line string) (string, error) {
-	matches := lc.pattern.FindAllStringSubmatch(line, -1)
+	matches := lc.Pattern.FindAllStringSubmatch(line, -1)
 	if len(matches) == 0 {
 		return line, nil
 	}

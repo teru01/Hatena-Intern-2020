@@ -1,6 +1,7 @@
 package converter
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,6 +29,7 @@ func TestConvert(t *testing.T) {
 
 	h := &HeadingConverter{
 		AllowedLevel: 5,
+		Pattern:      regexp.MustCompile(`^(#+) .*`),
 	}
 	for i, _ := range testCases {
 		result, err := h.convert(testCases[i])
