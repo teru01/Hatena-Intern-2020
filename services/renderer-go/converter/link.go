@@ -24,11 +24,11 @@ func (lc *LinkConverter) convert(line string) (string, error) {
 	for _, m := range matches {
 		if m[3] != "" {
 			// URLリンク直書きにマッチ
-			line = strings.Replace(line, m[0], fmt.Sprintf("<a href=%s></a>", m[0]), 1)
+			line = strings.Replace(line, m[0], fmt.Sprintf(`<a href="%s">%s</a>`, m[0], m[0]), 1)
 			continue
 		}
 		// link記法にマッチ
-		line = strings.Replace(line, m[0], fmt.Sprintf("<a href=%s>%s</a>", m[2], m[1]), 1)
+		line = strings.Replace(line, m[0], fmt.Sprintf(`<a href="%s">%s</a>`, m[2], m[1]), 1)
 	}
 	return line, nil
 }
