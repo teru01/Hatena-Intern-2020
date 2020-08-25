@@ -33,7 +33,7 @@ func TestLink(t *testing.T) {
 	}
 
 	lc := &LinkConverter{
-		pattern: regexp.MustCompile(`\[(.[^\]]*)\]\((https?://.[^\)]*)\)`),
+		Pattern: regexp.MustCompile(`\[(.[^\]]*)\]\((https?://.[^\)]*)\)`),
 	}
 	for _, testCase := range testCases {
 		result, err := lc.convert(testCase.in)
