@@ -42,3 +42,12 @@ func Execute(text string, lineConverters []LineConverter, wholeConverters []Whol
 	}
 	return convertedText, nil
 }
+
+// ここに書くのはあまり良く無いかも
+func NewConverters() ([]LineConverter, []WholeConverter) {
+	return []LineConverter{
+			NewHeadingConverter(5),
+			NewLinkConverter(),
+		},
+		[]WholeConverter{}
+}

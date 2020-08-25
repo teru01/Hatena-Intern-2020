@@ -10,6 +10,12 @@ type LinkConverter struct {
 	Pattern *regexp.Regexp
 }
 
+func NewLinkConverter() *LinkConverter {
+	return &LinkConverter{
+		Pattern: regexp.MustCompile(`\[(.[^\]]*)\]\((https?://.[^\)]*)\)|(https?://.[^\s]*)`),
+	}
+}
+
 func (lc *LinkConverter) convert(line string) (string, error) {
 	matches := lc.Pattern.FindAllStringSubmatch(line, -1)
 	if len(matches) == 0 {
