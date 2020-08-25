@@ -13,7 +13,7 @@ type HeadingConverter struct {
 var pattern *regexp.Regexp
 
 func init() {
-	pattern = regexp.MustCompile(`^(#+)`)
+	pattern = regexp.MustCompile(`^(#+) .*`)
 }
 
 func (c *HeadingConverter) convert(line string) (string, error) {
@@ -21,8 +21,8 @@ func (c *HeadingConverter) convert(line string) (string, error) {
 	if len(matches) == 0 {
 		return line, nil
 	}
-	h := c.sharpNumToHeadNum(matches[1])
-	return fmt.Sprintf("<h%d>", h)+line[matches[1]:]+fmt.Sprintf("</h%d>", h), nil
+	h := c.sharpNumToHeadNum(matches[3])
+	return fmt.Sprintf("<h%d>", h) + line[matches[3]+1:] + fmt.Sprintf("</h%d>", h), nil
 }
 
 func (c *HeadingConverter) sharpNumToHeadNum(n int) int {
