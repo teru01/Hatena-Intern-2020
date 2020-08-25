@@ -16,7 +16,7 @@ func NewLinkConverter() *LinkConverter {
 	}
 }
 
-func (lc *LinkConverter) convert(line string) (string, error) {
+func (lc *LinkConverter) convertLine(line string) (string, error) {
 	matches := lc.Pattern.FindAllStringSubmatch(line, -1)
 	if len(matches) == 0 {
 		return line, nil

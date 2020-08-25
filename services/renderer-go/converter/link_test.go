@@ -41,7 +41,7 @@ func TestLink(t *testing.T) {
 
 	lc := NewLinkConverter()
 	for _, testCase := range testCases {
-		result, err := lc.convert(testCase.in)
+		result, err := lc.convertLine(testCase.in)
 		assert.NoError(t, err)
 		assert.Equal(t, testCase.out, result)
 	}
