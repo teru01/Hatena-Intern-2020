@@ -2,14 +2,12 @@ package converter
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"strings"
-
-	"github.com/golang/go/src/fmt"
-	"github.com/hatena/Hatena-Intern-2020/services/renderer-go/converter/htmlizer"
 )
 
-func Execute(text string, lineConverters []htmlizer.LineConverter, wholeConverters []htmlizer.WholeConverters) (string, error) {
+func Execute(text string, lineConverters []LineConverter, wholeConverters []WholeConverter) (string, error) {
 	reader := bufio.NewReader(strings.NewReader(text))
 	var builder strings.Builder
 	for {
@@ -24,7 +22,7 @@ func Execute(text string, lineConverters []htmlizer.LineConverter, wholeConverte
 			if err != nil {
 				return "", err
 			}
-			fmt.Fprintf(&builder, convertedLine + "\n")
+			fmt.Fprintf(&builder, convertedLine+"\n")
 		}
 	}
 	convertedText := builder.String()

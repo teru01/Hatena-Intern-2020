@@ -11,15 +11,11 @@ func TestConvert(t *testing.T) {
 		"#hogehoge",
 		"###qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
 		"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-		`#hogehoge
-##aaawwws`,
 	}
 	expected := []string{
 		"<h1>hogehoge</h1>",
 		"<h3>qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</h3>",
 		"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-		`<h1>hogehoge</h1>
-<h2>aaawwws</h2>`,
 	}
 
 	h := &HeadingConverter{

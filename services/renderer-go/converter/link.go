@@ -1,3 +1,3 @@
-package htmlizer
+package converter
 
 type LinkConverter struct{}
