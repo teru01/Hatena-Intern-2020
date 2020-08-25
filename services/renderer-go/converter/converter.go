@@ -8,10 +8,12 @@ import (
 )
 
 type LineConverter interface {
-	convert(src string) (string, error)
+	convertLine(src string) (string, error)
 }
 
-type WholeConverter LineConverter
+type WholeConverter interface {
+	convertText(src string) (string, error)
+}
 
 func Execute(text string, lineConverters []LineConverter, wholeConverters []WholeConverter) (string, error) {
 	reader := bufio.NewReader(strings.NewReader(text))
@@ -24,7 +26,7 @@ func Execute(text string, lineConverters []LineConverter, wholeConverters []Whol
 			return "", err
 		}
 		for _, lc := range lineConverters {
-			line, err = lc.convert(strings.TrimRight(line, "\n"))
+			line, err = lc.convertLine(strings.TrimRight(line, "\n"))
 			if err != nil {
 				return "", err
 			}
@@ -35,7 +37,7 @@ func Execute(text string, lineConverters []LineConverter, wholeConverters []Whol
 
 	for _, wc := range wholeConverters {
 		var err error
-		convertedText, err = wc.convert(convertedText)
+		convertedText, err = wc.convertText(convertedText)
 		if err != nil {
 			return "", err
 		}
