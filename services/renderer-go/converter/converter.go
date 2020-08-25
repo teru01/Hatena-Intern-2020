@@ -24,12 +24,12 @@ func Execute(text string, lineConverters []LineConverter, wholeConverters []Whol
 			return "", err
 		}
 		for _, lc := range lineConverters {
-			convertedLine, err := lc.convert(line)
+			line, err = lc.convert(strings.TrimRight(line, "\n"))
 			if err != nil {
 				return "", err
 			}
-			fmt.Fprintf(&builder, convertedLine+"\n")
 		}
+		fmt.Fprintf(&builder, line + "\n")
 	}
 	convertedText := builder.String()
 
