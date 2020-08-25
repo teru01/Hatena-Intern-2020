@@ -51,5 +51,7 @@ func NewConverters() ([]LineConverter, []WholeConverter) {
 			NewHeadingConverter(5),
 			NewLinkConverter(),
 		},
-		[]WholeConverter{}
+		[]WholeConverter{
+			NewListConverter(),
+		}
 }
