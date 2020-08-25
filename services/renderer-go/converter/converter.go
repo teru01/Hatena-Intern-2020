@@ -29,7 +29,7 @@ func Execute(text string, lineConverters []LineConverter, wholeConverters []Whol
 				return "", err
 			}
 		}
-		fmt.Fprintf(&builder, line + "\n")
+		fmt.Fprintf(&builder, line+"\n")
 	}
 	convertedText := builder.String()
 
