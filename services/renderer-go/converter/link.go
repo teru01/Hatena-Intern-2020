@@ -37,8 +37,12 @@ func (lc *LinkConverter) convertLine(ctx context.Context, line string) (string, 
 		}
 		if matchTitle == "" {
 			// link記法 w/o titleにマッチ
-			reply, _ := lc.fetcherClient.Fetch(ctx, &pb_fetcher.FetchRequest{Uri: matchURLWithTitle})
-			line = strings.Replace(line, m[0], fmt.Sprintf(`<a href="%s">%s</a>`, matchURLWithTitle, reply.Title), 1)
+			reply, err := lc.fetcherClient.Fetch(ctx, &pb_fetcher.FetchRequest{Uri: matchURLWithTitle})
+			title := "unknown title"
+			if err == nil {
+				title = reply.Title
+			}
+			line = strings.Replace(line, m[0], fmt.Sprintf(`<a href="%s">%s</a>`, matchURLWithTitle, title), 1)
 			continue
 		}
 		// link記法 w/ titleにマッチ
