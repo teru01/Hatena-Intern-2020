@@ -18,7 +18,7 @@
         <p><a href="/my/blogs/{{.Blog.Path}}/entries/{{.Entry.ID}}">編集</a></p>
         {{end}}
       </header>
-      <section>{{.Entry.BodyHTML | unescapedHTML}}</section>
+      <section><pre>{{.Entry.BodyHTML | unescapedHTML}}</pre></section>
     </article>
   </section>
 </section>
