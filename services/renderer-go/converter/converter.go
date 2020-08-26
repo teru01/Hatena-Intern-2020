@@ -46,10 +46,10 @@ func Execute(text string, lineConverters []LineConverter, wholeConverters []Whol
 }
 
 // ここに書くのはあまり良く無いかも
-func NewConverters() ([]LineConverter, []WholeConverter) {
+func NewConverters(f pb_fetcher.FetcherClient) ([]LineConverter, []WholeConverter) {
 	return []LineConverter{
 			NewHeadingConverter(5),
-			NewLinkConverter(),
+			NewLinkConverter(f),
 		},
 		[]WholeConverter{
 			NewListConverter(),

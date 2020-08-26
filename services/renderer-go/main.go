@@ -18,6 +18,7 @@ import (
 	"github.com/hatena/Hatena-Intern-2020/services/renderer-go/converter"
 	server "github.com/hatena/Hatena-Intern-2020/services/renderer-go/grpc"
 	"github.com/hatena/Hatena-Intern-2020/services/renderer-go/log"
+	pb_fetcher "github.com/hatena/Hatena-Intern-2020/services/renderer-go/pb/fetcher"
 	pb "github.com/hatena/Hatena-Intern-2020/services/renderer-go/pb/renderer"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -64,7 +65,14 @@ func run(args []string) error {
 			grpc_recovery.UnaryServerInterceptor(),
 		)),
 	)
-	lcs, wcs := converter.NewConverters()
+
+	fetcherConn, err := grpc.Dial(conf.FetcherAddr, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		return fmt.Errorf("failed to connect to fetcher service: %+v", err)
+	}
+	defer fetcherConn.Close()
+	fetcherCli := pb_fetcher.NewFetcherClient(fetcherConn)
+	lcs, wcs := converter.NewConverters(fetcherCli)
 	svr := server.NewServer(lcs, wcs)
 	pb.RegisterRendererServer(s, svr)
 	healthpb.RegisterHealthServer(s, svr)
