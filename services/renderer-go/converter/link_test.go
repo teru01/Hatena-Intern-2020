@@ -38,6 +38,14 @@ func TestLink(t *testing.T) {
 			in:  "1つ目はhttp://google.com で，2つ目は[hoge](http://google.com)です．",
 			out: `1つ目は<a href="http://google.com">http://google.com</a> で，2つ目は<a href="http://google.com">hoge</a>です．`,
 		},
+		TC{
+			in:  "こんにちは，[](http://google.com)です．",
+			out: `こんにちは，<a href="http://google.com">success</a>です．`,
+		},
+		TC{
+			in:  "こんにちは，[](http://google.com)です．2つ目は[foo](http://bar.com),3つ目は[](http://bar.com)",
+			out: `こんにちは，<a href="http://google.com">success</a>です．2つ目は<a href="http://bar.com">foo</a>,3つ目は<a href="http://bar.com">success</a>`,
+		},
 	}
 
 	lc := NewLinkConverter(&DummyFetchClient{})

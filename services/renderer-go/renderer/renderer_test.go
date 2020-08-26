@@ -86,6 +86,15 @@ func TestRender(t *testing.T) {
 <h1>title</h1>
 `,
 		},
+		TC{
+			in: `- [hoge](http://google.com)
+	- [](http://google.com)または[hoge](http://google.com)
+# title
+`,
+			out: `<ul><li><a href="http://google.com">hoge</a></li><ul><li><a href="http://google.com">success</a>または<a href="http://google.com">hoge</a></li></ul></ul>
+<h1>title</h1>
+`,
+		},
 	}
 
 	lc, wc := converter.NewConverters(&converter.DummyFetchClient{})

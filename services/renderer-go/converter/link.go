@@ -16,7 +16,7 @@ type LinkConverter struct {
 
 func NewLinkConverter(fetcherCli pb_fetcher.FetcherClient) *LinkConverter {
 	return &LinkConverter{
-		Pattern:       regexp.MustCompile(`\[(.[^\]]*)\]\((https?://.[^\)]*)\)|(https?://.[^\s]*)`),
+		Pattern:       regexp.MustCompile(`\[([^\]]*)\]\((https?://[^\)]*)\)|(https?://[^\s]*)`),
 		fetcherClient: fetcherCli,
 	}
 }
