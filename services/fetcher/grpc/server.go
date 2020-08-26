@@ -21,8 +21,7 @@ func NewServer() *Server {
 
 // Fetcher は受け取った文書を HTML に変換する
 func (s *Server) Fetch(ctx context.Context, in *pb.FetchRequest) (*pb.FetchReply, error) {
-	url := "dummy"
-	title, err := fetcher.Fetch(ctx, url)
+	title, err := fetcher.Fetch(ctx, in.Uri)
 	if err != nil {
 		return nil, err
 	}
