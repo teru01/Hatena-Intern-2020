@@ -1,8 +1,8 @@
 package converter
 
 import (
-	"testing"
 	"context"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -10,12 +10,6 @@ import (
 type TC struct {
 	in  string
 	out string
-}
-
-type DummyFetchClient {}
-
-func (d *DummyFetchClient) Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FetchReply, error) {
-	
 }
 
 func TestLink(t *testing.T) {
@@ -46,7 +40,7 @@ func TestLink(t *testing.T) {
 		},
 	}
 
-	lc := NewLinkConverter()
+	lc := NewLinkConverter(&DummyFetchClient{})
 	for _, testCase := range testCases {
 		result, err := lc.convertLine(context.Background(), testCase.in)
 		assert.NoError(t, err)

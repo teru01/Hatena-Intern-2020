@@ -88,7 +88,7 @@ func TestRender(t *testing.T) {
 		},
 	}
 
-	lc, wc := converter.NewConverters()
+	lc, wc := converter.NewConverters(&converter.DummyFetchClient{})
 	for _, testCase := range testCases {
 		html, err := Render(context.Background(), testCase.in, lc, wc)
 		assert.NoError(t, err)

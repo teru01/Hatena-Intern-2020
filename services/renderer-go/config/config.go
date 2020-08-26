@@ -17,7 +17,7 @@ type Config struct {
 	Mode                string
 	GRPCPort            int
 	GracefulStopTimeout time.Duration
-	FetcherAddr string
+	FetcherAddr         string
 }
 
 // Load は環境変数から設定を読み込む
@@ -26,7 +26,7 @@ func Load() (*Config, error) {
 		Mode:                "production",
 		GRPCPort:            50051,
 		GracefulStopTimeout: 10 * time.Second,
-		FetcherAddr: "fetcher:50051",
+		FetcherAddr:         "fetcher:50051",
 	}
 
 	// Mode
