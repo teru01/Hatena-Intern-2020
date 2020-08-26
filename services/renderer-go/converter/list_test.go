@@ -2,6 +2,7 @@ package converter
 
 import (
 	"testing"
+	"context"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -59,7 +60,7 @@ bar
 
 	lc := NewListConverter()
 	for _, testCase := range testCases {
-		result, err := lc.convertText(testCase.in)
+		result, err := lc.convertText(context.Background(), testCase.in)
 		assert.NoError(t, err)
 		assert.Equal(t, testCase.out, result)
 	}

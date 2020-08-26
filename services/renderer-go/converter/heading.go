@@ -1,6 +1,7 @@
 package converter
 
 import (
+	"context"
 	"fmt"
 	"math"
 	"regexp"
@@ -18,7 +19,7 @@ func NewHeadingConverter(allowedLevel int) *HeadingConverter {
 	}
 }
 
-func (hc *HeadingConverter) convertLine(line string) (string, error) {
+func (hc *HeadingConverter) convertLine(ctx context.Context, line string) (string, error) {
 	matches := hc.Pattern.FindStringSubmatchIndex(line)
 	if len(matches) == 0 {
 		return line, nil

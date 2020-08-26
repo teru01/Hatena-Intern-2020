@@ -2,20 +2,23 @@ package converter
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"strings"
+
+	pb_fetcher "github.com/hatena/Hatena-Intern-2020/services/renderer-go/pb/fetcher"
 )
 
 type LineConverter interface {
-	convertLine(src string) (string, error)
+	convertLine(ctx context.Context, src string) (string, error)
 }
 
 type WholeConverter interface {
-	convertText(src string) (string, error)
+	convertText(ctx context.Context, src string) (string, error)
 }
 
-func Execute(text string, lineConverters []LineConverter, wholeConverters []WholeConverter) (string, error) {
+func Execute(ctx context.Context, text string, lineConverters []LineConverter, wholeConverters []WholeConverter) (string, error) {
 	reader := bufio.NewReader(strings.NewReader(text))
 	var builder strings.Builder
 	for {
@@ -26,7 +29,7 @@ func Execute(text string, lineConverters []LineConverter, wholeConverters []Whol
 			return "", err
 		}
 		for _, lc := range lineConverters {
-			line, err = lc.convertLine(strings.TrimRight(line, "\n"))
+			line, err = lc.convertLine(ctx, strings.TrimRight(line, "\n"))
 			if err != nil {
 				return "", err
 			}
@@ -37,7 +40,7 @@ func Execute(text string, lineConverters []LineConverter, wholeConverters []Whol
 
 	for _, wc := range wholeConverters {
 		var err error
-		convertedText, err = wc.convertText(convertedText)
+		convertedText, err = wc.convertText(ctx, convertedText)
 		if err != nil {
 			return "", err
 		}
