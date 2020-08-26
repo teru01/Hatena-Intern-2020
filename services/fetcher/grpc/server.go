@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/hatena/Hatena-Intern-2020/services/fetcher/fetcher"
 	pb "github.com/hatena/Hatena-Intern-2020/services/fetcher/pb/fetcher"
@@ -21,7 +22,7 @@ func NewServer() *Server {
 
 // Fetcher は受け取った文書を HTML に変換する
 func (s *Server) Fetch(ctx context.Context, in *pb.FetchRequest) (*pb.FetchReply, error) {
-	title, err := fetcher.Fetch(ctx, in.Uri)
+	title, err := fetcher.Fetch(ctx, in.Uri, &http.Client{})
 	if err != nil {
 		return nil, err
 	}
