@@ -16,6 +16,7 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	server "github.com/hatena/Hatena-Intern-2020/services/fetcher/grpc"
 	"github.com/hatena/Hatena-Intern-2020/services/fetcher/log"
+	"github.com/hatena/Hatena-Intern-2020/services/fetcher/config"
 	pb "github.com/hatena/Hatena-Intern-2020/services/fetcher/pb/fetcher"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -62,8 +63,7 @@ func run(args []string) error {
 			grpc_recovery.UnaryServerInterceptor(),
 		)),
 	)
-	lcs, wcs := converter.NewConverters()
-	svr := server.NewServer(lcs, wcs)
+	svr := server.NewServer()
 	pb.RegisterFetcherServer(s, svr)
 	healthpb.RegisterHealthServer(s, svr)
 	go stop(s, conf.GracefulStopTimeout, logger)
