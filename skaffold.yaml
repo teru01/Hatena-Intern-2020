@@ -18,6 +18,8 @@ build:
       dockerfile: Dockerfile.test
   - image: hatena-intern-2020-renderer-go
     context: services/renderer-go
+  - image: hatena-intern-2020-fetcher
+    context: services/fetcher
   local:
     push: false
     useBuildkit: true
