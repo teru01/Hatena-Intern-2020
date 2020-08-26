@@ -63,7 +63,7 @@ func TestExtractTitle(t *testing.T) {
 <title>  </title>
 </head>
 `,
-			out: "hello",
+			out: "",
 		},
 	}
 	for _, testCase := range testCases {
