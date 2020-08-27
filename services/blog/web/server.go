@@ -101,6 +101,7 @@ func (s *Server) attachHandlers() {
 
 	s.e.GET("/blogs/:path", s.BlogHandler())
 	s.e.GET("/blogs/:path/entries/:id", s.EntryHandler())
+	s.e.Static("/images", "images")
 }
 
 // CustomContext はカスタマイズされたコンテキスト
