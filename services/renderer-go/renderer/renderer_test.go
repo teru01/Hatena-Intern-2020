@@ -86,12 +86,41 @@ func TestRender(t *testing.T) {
 <h1>title</h1>
 `,
 		},
+		TC{
+			in: `- [hoge](http://google.com)
+	- [](http://google.com)または[hoge](http://google.com)
+# title
+`,
+			out: `<ul><li><a href="http://google.com">hoge</a></li><ul><li><a href="http://google.com">success</a>または<a href="http://google.com">hoge</a></li></ul></ul>
+<h1>title</h1>
+`,
+		},
 	}
 
-	lc, wc := converter.NewConverters()
+	lc, wc := converter.NewConverters(&converter.DummyFetchClient{})
 	for _, testCase := range testCases {
 		html, err := Render(context.Background(), testCase.in, lc, wc)
 		assert.NoError(t, err)
 		assert.Equal(t, testCase.out, html)
 	}
 }
+
+func TestURLCache(t *testing.T) {
+	tc := TC{
+		in:  `1つ目は[](http://google.com)で，2つ目は[](http://google.com)です．
+3つ目は[](http://google.com)
+4つ目は[](http://google.com)
+`,
+		out: `1つ目は<a href="http://google.com">success</a>で，2つ目は<a href="http://google.com">success</a>です．
+3つ目は<a href="http://google.com">success</a>
+4つ目は<a href="http://google.com">success</a>
+`,
+	}
+	fc := converter.DummyFetchClient{}
+	lc, wc := converter.NewConverters(&fc)
+	html, err := Render(context.Background(), tc.in, lc, wc)
+	assert.NoError(t, err)
+	assert.Equal(t, tc.out, html)
+	assert.Equal(t, fc.CallCount(), 1) // 2度目以降は呼ばれずキャッシュが使われる
+}
+

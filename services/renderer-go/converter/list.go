@@ -1,6 +1,7 @@
 package converter
 
 import (
+	"context"
 	"regexp"
 	"strings"
 )
@@ -16,7 +17,7 @@ func NewListConverter() *ListConverter {
 }
 
 // テキスト全体を受け取り，変換して返す
-func (lc *ListConverter) convertText(text string) (string, error) {
+func (lc *ListConverter) convertText(ctx context.Context, text string) (string, error) {
 	lines := strings.Split(text, "\n")
 	var builder strings.Builder
 	prevNumIndent := -1

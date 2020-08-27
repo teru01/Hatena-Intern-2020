@@ -1,6 +1,7 @@
 package converter
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,7 +29,7 @@ func TestConvert(t *testing.T) {
 
 	h := NewHeadingConverter(5)
 	for i, _ := range testCases {
-		result, err := h.convertLine(testCases[i])
+		result, err := h.convertLine(context.Background(), testCases[i])
 		assert.NoError(t, err)
 		assert.Equal(t, expected[i], result)
 	}
