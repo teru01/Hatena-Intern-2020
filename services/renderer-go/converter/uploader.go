@@ -21,7 +21,7 @@ type AWSUploader struct {
 	session *session.Session
 }
 
-func (au *AWSUploader) NewAWSUploder() (*AWSUploader, error) {
+func NewAWSUploder() (*AWSUploader, error) {
 	s, err := session.NewSession(&aws.Config{
 		Region: aws.String("ap-northeast-1"),
 	})
@@ -34,11 +34,11 @@ func (au *AWSUploader) NewAWSUploder() (*AWSUploader, error) {
 }
 
 func (au *AWSUploader) Upload(data image.Image) (string, error) {
-	var buf *bytes.Buffer
+	buf := new(bytes.Buffer)
 	if err := png.Encode(buf, data); err != nil {
 		return "", err
 	}
-	fileName := uuid.New().String()
+	fileName := uuid.New().String() + ".png"
 	bucketName := os.Getenv("AWS_BUCKET_NAME")
 	if bucketName == "" {
 		return "", fmt.Errorf("empty bucket name")
@@ -52,5 +52,5 @@ func (au *AWSUploader) Upload(data image.Image) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("https://%s.s3-ap-northeast-1.amazonaws.com/%s.png", bucketName, fileName), nil
+	return fmt.Sprintf("https://%s.s3-ap-northeast-1.amazonaws.com/%s", bucketName, fileName), nil
 }

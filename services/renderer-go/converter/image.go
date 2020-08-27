@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"image"
+	"os"
 	"regexp"
 	"strings"
 
@@ -46,18 +47,17 @@ func (ic *ImageConverter) convertLine(ctx context.Context, line string) (string,
 
 func (ic *ImageConverter) createImage(imageStr string) (image.Image, error) {
 	size := 96
-	message := "テスト"
+	message := imageStr
 	im := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{size, size * len([]rune(message))}})
-
 	dc := gg.NewContext(size*len([]rune(message)), size)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
 	dc.SetRGB(0, 0, 0)
-	if err := dc.LoadFontFace("../arial.ttf", float64(size)); err != nil {
+	if err := dc.LoadFontFace(os.Getenv("FONT_FILE_PATH"), float64(size)); err != nil {
 		return nil, err
 	}
-	dc.DrawStringAnchored(message, float64(size*len([]rune(message))/2), float64(size/2), 0.5, 0.5)
 
+	dc.DrawStringAnchored(message, float64(size*len([]rune(message))/2), float64(size/2), 0.5, 0.5)
 	dc.DrawImage(im, 0, 0)
 	return dc.Image(), nil
 }
