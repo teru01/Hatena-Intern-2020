@@ -97,7 +97,8 @@ func TestRender(t *testing.T) {
 		},
 	}
 
-	lc, wc := converter.NewConverters(&converter.DummyFetchClient{})
+	lc, wc, err := converter.NewConverters(&converter.DummyFetchClient{})
+	assert.NoError(t, err)
 	for _, testCase := range testCases {
 		html, err := Render(context.Background(), testCase.in, lc, wc)
 		assert.NoError(t, err)
@@ -107,7 +108,7 @@ func TestRender(t *testing.T) {
 
 func TestURLCache(t *testing.T) {
 	tc := TC{
-		in:  `1つ目は[](http://google.com)で，2つ目は[](http://google.com)です．
+		in: `1つ目は[](http://google.com)で，2つ目は[](http://google.com)です．
 3つ目は[](http://google.com)
 4つ目は[](http://google.com)
 `,
@@ -117,10 +118,10 @@ func TestURLCache(t *testing.T) {
 `,
 	}
 	fc := converter.DummyFetchClient{}
-	lc, wc := converter.NewConverters(&fc)
+	lc, wc, err := converter.NewConverters(&fc)
+	assert.NoError(t, err)
 	html, err := Render(context.Background(), tc.in, lc, wc)
 	assert.NoError(t, err)
 	assert.Equal(t, tc.out, html)
 	assert.Equal(t, fc.CallCount(), 1) // 2度目以降は呼ばれずキャッシュが使われる
 }
-

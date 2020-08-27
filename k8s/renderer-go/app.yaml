@@ -39,6 +39,8 @@ spec:
         envFrom:
         - configMapRef:
             name: renderer-go-app-env-vars
+        - configMapRef:
+            name: aws-credentials
         resources:
           requests:
             cpu: 100m

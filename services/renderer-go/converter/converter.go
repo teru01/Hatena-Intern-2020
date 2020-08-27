@@ -49,12 +49,17 @@ func Execute(ctx context.Context, text string, lineConverters []LineConverter, w
 }
 
 // ここに書くのはあまり良く無いかも
-func NewConverters(f pb_fetcher.FetcherClient) ([]LineConverter, []WholeConverter) {
+func NewConverters(f pb_fetcher.FetcherClient) ([]LineConverter, []WholeConverter, error) {
+	uploader, err := NewAWSUploder()
+	if err != nil {
+		return nil, nil, err
+	}
 	return []LineConverter{
 			NewHeadingConverter(5),
 			NewLinkConverter(f),
+			NewImageConverter(uploader),
 		},
 		[]WholeConverter{
 			NewListConverter(),
-		}
+		}, nil
 }

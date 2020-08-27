@@ -7,3 +7,6 @@ configMapGenerator:
   literals:
   - MODE=development
   - FETCHER_ADDR=fetcher:50051
+- name: aws-credentials
+  envs:
+    - .env

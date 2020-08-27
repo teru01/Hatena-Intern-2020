@@ -10,7 +10,8 @@ import (
 )
 
 func TestServerRender(t *testing.T) {
-	lc, wc := converter.NewConverters(&converter.DummyFetchClient{})
+	lc, wc, err := converter.NewConverters(&converter.DummyFetchClient{})
+	assert.NoError(t, err)
 	s := NewServer(lc, wc)
 	src := `foo https://google.com/ bar
 `
