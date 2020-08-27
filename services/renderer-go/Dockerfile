@@ -17,7 +17,8 @@ RUN GRPC_HEALTH_PROBE_VERSION=v0.3.2 && \
     chmod +x /bin/grpc_health_probe
 
 COPY --from=builder /services/renderer-go/bin/server /services/renderer-go/bin/server
-COPY arial.ttf /services/renderer-go/bin
+COPY converter/ipag.ttf /services/renderer-go/bin
+ENV FONT_FILE_PATH=/services/renderer-go/bin/ipag.ttf
 RUN adduser -D -u 1000 app
 USER 1000
 
