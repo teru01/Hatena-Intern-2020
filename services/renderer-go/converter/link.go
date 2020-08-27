@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 
 	pb_fetcher "github.com/hatena/Hatena-Intern-2020/services/renderer-go/pb/fetcher"
@@ -30,17 +31,22 @@ func (lc *LinkConverter) convertLine(ctx context.Context, line string) (string, 
 	if len(matches) == 0 {
 		return line, nil
 	}
-	for _, m := range matches {
-		go func(title, url string) {
-			if title == "" {
-				_, found := lc.cache.Get(url)
-				if found {
-					return
-				}
+	var wg sync.WaitGroup
+
+	fetchTargetUrlSet := extractFetchTargetURL(matches)
+	for url, _ := range fetchTargetUrlSet {
+		// 先にタイトルを並行に取得してキャッシュにセットしておく
+		// replaceと同時にやるとデータ競合しそうなので
+		wg.Add(1)
+		go func(url string) {
+			_, found := lc.cache.Get(url)
+			if !found {
 				lc.cache.Set(url, lc.fetchTitle(ctx, url), cache.DefaultExpiration)
 			}
-		}(m[1], m[2])
+			wg.Done()
+		}(url)
 	}
+	wg.Wait()
 	for _, m := range matches {
 		matchTitle := m[1]
 		matchURLWithTitle := m[2] // (title)[url]記法で記述された際のurlにマッチするもの
@@ -49,8 +55,7 @@ func (lc *LinkConverter) convertLine(ctx context.Context, line string) (string, 
 			// URLリンク直書きにマッチ
 			line = strings.Replace(line, matchOnlyURL, fmt.Sprintf(`<a href="%s">%s</a>`, matchOnlyURL, matchOnlyURL), 1)
 			continue
-		}
-		if matchTitle == "" {
+		} else if matchTitle == "" {
 			// link記法 w/o titleにマッチ
 			title, found := lc.cache.Get(matchURLWithTitle)
 			if !found {
@@ -72,4 +77,15 @@ func (lc *LinkConverter) fetchTitle(ctx context.Context, url string) string {
 		title = reply.Title
 	}
 	return title
+}
+
+func extractFetchTargetURL(matches [][]string) map[string]struct{} {
+	urlSet := make(map[string]struct{})
+	for _, m := range(matches) {
+		if m[1] == "" {
+			// タイトルが空
+			urlSet[m[2]] = struct{}{}
+		}
+	}
+	return urlSet
 }
