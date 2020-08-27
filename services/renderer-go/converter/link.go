@@ -81,8 +81,8 @@ func (lc *LinkConverter) fetchTitle(ctx context.Context, url string) string {
 
 func extractFetchTargetURL(matches [][]string) map[string]struct{} {
 	urlSet := make(map[string]struct{})
-	for _, m := range(matches) {
-		if m[1] == "" {
+	for _, m := range matches {
+		if m[1] == "" && m[3] == "" {
 			// タイトルが空
 			urlSet[m[2]] = struct{}{}
 		}

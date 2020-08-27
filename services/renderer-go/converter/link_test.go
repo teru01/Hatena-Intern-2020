@@ -2,7 +2,6 @@ package converter
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -79,4 +78,49 @@ func TestLinkTitleCache(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, tc.out, result)
 	assert.Equal(t, 2, lc.fetcherClient.(*DummyFetchClient).callCount) // 異なるURIならキャッシュは使われない
+}
+
+func TestExtractFetchTargetURL(t *testing.T) {
+	testCases := [][][]string{
+		[][]string{
+			[]string{"[title](http://google.com)", "", "http://google.com", ""},
+			[]string{"[title](http://yahoo.com)", "", "http://yahoo.com", ""},
+			[]string{"[title](http://amazon.com)", "", "http://amazon.com", ""},
+		},
+		[][]string{
+			[]string{"[title](http://google.com)", "", "http://google.com", ""},
+			[]string{"[title](http://yahoo.com)", "", "http://yahoo.com", ""},
+			[]string{"[title](http://google.com)", "", "http://google.com", ""},
+		},
+		[][]string{
+			[]string{"http://google.com", "", "", "http://google.com"},
+			[]string{"[title](http://google.com)", "title", "http://google.com", ""},
+			[]string{"[](http://google.com)", "", "http://google.com", ""},
+		},
+		[][]string{
+			[]string{"http://google.com", "", "", "http://google.com"},
+			[]string{"http://google.com", "", "", "http://google.com"},
+			[]string{"http://google.com", "", "", "http://google.com"},
+		},
+	}
+	expected := []map[string]struct{}{
+		map[string]struct{}{
+			"http://google.com": struct{}{},
+			"http://yahoo.com":  struct{}{},
+			"http://amazon.com": struct{}{},
+		},
+		map[string]struct{}{
+			"http://google.com": struct{}{},
+			"http://yahoo.com":  struct{}{},
+		},
+		map[string]struct{}{
+			"http://google.com": struct{}{},
+		},
+		map[string]struct{}{},
+	}
+
+	for i, testCase := range testCases {
+		urlSet := extractFetchTargetURL(testCase)
+		assert.Equal(t, expected[i], urlSet)
+	}
 }
