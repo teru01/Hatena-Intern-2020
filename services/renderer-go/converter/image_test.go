@@ -3,6 +3,7 @@ package converter
 import (
 	"context"
 	"image"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -32,6 +33,7 @@ func TestImageConverter(t *testing.T) {
 	}
 
 	ic := NewImageConverter(&DummyUploader{})
+	os.Setenv("FONT_FILE_PATH", "./ipag.ttf")
 	for _, testCase := range testCases {
 		output, err := ic.convertLine(context.Background(), testCase.in)
 		assert.NoError(t, err)
