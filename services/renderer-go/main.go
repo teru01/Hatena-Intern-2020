@@ -72,7 +72,10 @@ func run(args []string) error {
 	}
 	defer fetcherConn.Close()
 	fetcherCli := pb_fetcher.NewFetcherClient(fetcherConn)
-	lcs, wcs := converter.NewConverters(fetcherCli)
+	lcs, wcs, err := converter.NewConverters(fetcherCli)
+	if err != nil {
+		return err
+	}
 	svr := server.NewServer(lcs, wcs)
 	pb.RegisterRendererServer(s, svr)
 	healthpb.RegisterHealthServer(s, svr)

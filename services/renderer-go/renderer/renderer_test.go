@@ -97,7 +97,8 @@ func TestRender(t *testing.T) {
 		},
 	}
 
-	lc, wc := converter.NewConverters(&converter.DummyFetchClient{})
+	lc, wc, err := converter.NewConverters(&converter.DummyFetchClient{})
+	assert.NoError(t, err)
 	for _, testCase := range testCases {
 		html, err := Render(context.Background(), testCase.in, lc, wc)
 		assert.NoError(t, err)
@@ -117,7 +118,8 @@ func TestURLCache(t *testing.T) {
 `,
 	}
 	fc := converter.DummyFetchClient{}
-	lc, wc := converter.NewConverters(&fc)
+	lc, wc, err := converter.NewConverters(&fc)
+	assert.NoError(t, err)
 	html, err := Render(context.Background(), tc.in, lc, wc)
 	assert.NoError(t, err)
 	assert.Equal(t, tc.out, html)
