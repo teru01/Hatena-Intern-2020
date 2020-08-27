@@ -7,8 +7,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-type DummyFetchClient struct{}
+type DummyFetchClient struct {
+	callCount int
+}
 
 func (d *DummyFetchClient) Fetch(ctx context.Context, in *pb_fetcher.FetchRequest, opts ...grpc.CallOption) (*pb_fetcher.FetchReply, error) {
+	d.callCount++
 	return &pb_fetcher.FetchReply{Title: "success"}, nil
 }

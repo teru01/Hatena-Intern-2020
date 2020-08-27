@@ -2,6 +2,7 @@ package converter
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -54,4 +55,28 @@ func TestLink(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, testCase.out, result)
 	}
+}
+
+func TestLinkTitleCache(t *testing.T) {
+	tc := TC{
+		in:  "1つ目は[](http://google.com)で，2つ目は[](http://google.com)です．",
+		out: `1つ目は<a href="http://google.com">success</a>で，2つ目は<a href="http://google.com">success</a>です．`,
+	}
+	lc := NewLinkConverter(&DummyFetchClient{callCount: 0})
+	result, err := lc.convertLine(context.Background(), tc.in)
+	assert.NoError(t, err)
+	assert.Equal(t, tc.out, result)
+	_, found := lc.cache.Get("http://google.com")
+	assert.Equal(t, true, found)
+	assert.Equal(t, lc.fetcherClient.(*DummyFetchClient).callCount, 1) // 2度目は呼ばれずキャッシュが使われる
+
+	tc = TC{
+		in:  "1つ目は[](http://google.com)で，2つ目は[](https://google.com/hogehoge)です．",
+		out: `1つ目は<a href="http://google.com">success</a>で，2つ目は<a href="https://google.com/hogehoge">success</a>です．`,
+	}
+	lc = NewLinkConverter(&DummyFetchClient{callCount: 0})
+	result, err = lc.convertLine(context.Background(), tc.in)
+	assert.NoError(t, err)
+	assert.Equal(t, tc.out, result)
+	assert.Equal(t, 2, lc.fetcherClient.(*DummyFetchClient).callCount) // 異なるURIならキャッシュは使われない
 }
