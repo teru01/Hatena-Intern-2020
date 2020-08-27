@@ -7,3 +7,4 @@ configMapGenerator:
   literals:
   - MODE=development
   - FETCHER_ADDR=fetcher:50051
+  env: .env

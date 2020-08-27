@@ -107,7 +107,7 @@ func TestRender(t *testing.T) {
 
 func TestURLCache(t *testing.T) {
 	tc := TC{
-		in:  `1つ目は[](http://google.com)で，2つ目は[](http://google.com)です．
+		in: `1つ目は[](http://google.com)で，2つ目は[](http://google.com)です．
 3つ目は[](http://google.com)
 4つ目は[](http://google.com)
 `,
@@ -123,4 +123,3 @@ func TestURLCache(t *testing.T) {
 	assert.Equal(t, tc.out, html)
 	assert.Equal(t, fc.CallCount(), 1) // 2度目以降は呼ばれずキャッシュが使われる
 }
-
