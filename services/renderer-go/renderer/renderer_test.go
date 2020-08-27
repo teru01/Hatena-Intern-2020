@@ -104,3 +104,23 @@ func TestRender(t *testing.T) {
 		assert.Equal(t, testCase.out, html)
 	}
 }
+
+func TestURLCache(t *testing.T) {
+	tc := TC{
+		in:  `1つ目は[](http://google.com)で，2つ目は[](http://google.com)です．
+3つ目は[](http://google.com)
+4つ目は[](http://google.com)
+`,
+		out: `1つ目は<a href="http://google.com">success</a>で，2つ目は<a href="http://google.com">success</a>です．
+3つ目は<a href="http://google.com">success</a>
+4つ目は<a href="http://google.com">success</a>
+`,
+	}
+	fc := converter.DummyFetchClient{}
+	lc, wc := converter.NewConverters(&fc)
+	html, err := Render(context.Background(), tc.in, lc, wc)
+	assert.NoError(t, err)
+	assert.Equal(t, tc.out, html)
+	assert.Equal(t, fc.CallCount(), 1) // 2度目以降は呼ばれずキャッシュが使われる
+}
+

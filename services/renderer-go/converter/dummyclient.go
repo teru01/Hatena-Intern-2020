@@ -15,3 +15,7 @@ func (d *DummyFetchClient) Fetch(ctx context.Context, in *pb_fetcher.FetchReques
 	d.callCount++
 	return &pb_fetcher.FetchReply{Title: "success"}, nil
 }
+
+func (d *DummyFetchClient) CallCount() int {
+	return d.callCount
+}
